@@ -1,0 +1,68 @@
+/* Estilos básicos para o sistema */
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+.list-group-item.active {
+    font-weight: 500;
+}
+
+/* Melhora a visualização dos forms */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* Ajustes para tables */
+.table th {
+    font-weight: 500;
+    background-color: #f8f9fa;
+}
+
+/* Espaçamento para botões em forms */
+.form-actions {
+    margin-top: 1.5rem;
+}
+
+/* Ajustes para o select2 */
+.select2-container {
+    width: 100% !important;
+}
+
+/* Estilo para os campos inválidos */
+.is-invalid {
+    border-color: #dc3545;
+}
+
+/* Estilo para mensagens de erro */
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-control:invalid ~ .invalid-feedback {
+    display: block;
+}
+
+/* Melhora a aparência dos textareas */
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Estilo para os títulos das seções */
+.border-bottom {
+    border-bottom: 2px solid #dee2e6 !important;
+}

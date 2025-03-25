@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0 text-center">Cadastro de Nova Loja</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Dados de Acesso -->
+                        <h4 class="mb-3 border-bottom pb-2">Dados de Acesso</h4>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                Nome de Usuário*
+                                {% if form.username.errors %}
+                                <span class="text-danger">{{ form.username.errors }}</span>
+                                {% endif %}
+                            </label>
+                            {{ form.username }}
+                            <div class="invalid-feedback">
+                                Por favor, escolha um nome de usuário.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                Email*
+                                {% if form.email.errors %}
+                                <span class="text-danger">{{ form.email.errors }}</span>
+                                {% endif %}
+                            </label>
+                            {{ form.email }}
+                            <div class="invalid-feedback">
+                                Por favor, forneça um email válido.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                Senha*
+                                {% if form.password1.errors %}
+                                <span class="text-danger">{{ form.password1.errors }}</span>
+                                {% endif %}
+                            </label>
+                            {{ form.password1 }}
+                            <div class="invalid-feedback">
+                                Por favor, crie uma senha.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                Confirmação de Senha*
+                                {% if form.password2.errors %}
+                                <span class="text-danger">{{ form.password2.errors }}</span>
+                                {% endif %}
+                            </label>
+                            {{ form.password2 }}
+                            <div class="invalid-feedback">
+                                As senhas devem ser iguais.
+                            </div>
+                        </div>
+                        
+                        <!-- Dados da Loja -->
+                        <h4 class="mt-4 mb-3 border-bottom pb-2">Dados da Loja</h4>
+                        
+                        <div class="mb-3">
+                            <label for="id_nome" class="form-label">
+                                Nome da Loja*
+                                {% if form.nome.errors %}
+                                <span class="text-danger">{{ form.nome.errors }}</span>
+                                {% endif %}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="id_nome" 
+                                   name="nome" 
+                                   required
+                                   value="{{ form.nome.value|default_if_none:'' }}">
+                            <div class="invalid-feedback">
+                                Por favor, informe o nome da loja.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_cnpj" class="form-label">
+                                CNPJ*
+                                {% if form.cnpj.errors %}
+                                <span class="text-danger">{{ form.cnpj.errors }}</span>
+                                {% endif %}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="id_cnpj" 
+                                   name="cnpj" 
+                                   required
+                                   value="{{ form.cnpj.value|default_if_none:'' }}">
+                            <div class="invalid-feedback">
+                                Por favor, informe o CNPJ da loja.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_endereco" class="form-label">
+                                Endereço Completo*
+                                {% if form.endereco.errors %}
+                                <span class="text-danger">{{ form.endereco.errors }}</span>
+                                {% endif %}
+                            </label>
+                            <textarea class="form-control" 
+                                      id="id_endereco" 
+                                      name="endereco" 
+                                      rows="3" 
+                                      required>{{ form.endereco.value|default_if_none:'' }}</textarea>
+                            <div class="invalid-feedback">
+                                Por favor, informe o endereço da loja.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_telefone" class="form-label">
+                                Telefone*
+                                {% if form.telefone.errors %}
+                                <span class="text-danger">{{ form.telefone.errors }}</span>
+                                {% endif %}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="id_telefone" 
+                                   name="telefone" 
+                                   required
+                                   value="{{ form.telefone.value|default_if_none:'' }}">
+                            <div class="invalid-feedback">
+                                Por favor, informe o telefone da loja.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-store"></i> Cadastrar Loja
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Validação do formulário no frontend
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+</script>
+{% endblock %}

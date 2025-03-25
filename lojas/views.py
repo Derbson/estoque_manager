@@ -5,6 +5,9 @@ from pedidos.models import Pedido, ItemPedido
 from .models import Loja, EstoqueLoja
 from .forms import FazerPedidoForm, ItemPedidoFormSet
 from django.urls import reverse_lazy
+from django.contrib.auth import login
+from .forms import LojaRegistrationForm
+
 
 class ProdutosDisponiveisView(ListView):
     model = Produto
@@ -70,3 +73,14 @@ class EstoqueLojaView(ListView):
     def get_queryset(self):
         # Filtra apenas estoque da loja (simulando a loja logada)
         return EstoqueLoja.objects.filter(loja=Loja.objects.first()).select_related('produto')
+
+
+class CadastroLojaView(CreateView):
+    form_class = LojaRegistrationForm
+    template_name = 'lojas/cadastro_loja.html'
+    success_url = reverse_lazy('pagina_inicial')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
