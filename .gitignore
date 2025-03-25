@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+*.env
+*.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django stuff
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Migrations (optional, pode ser útil para evitar conflitos)
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Configurações e credenciais locais
+.env
+settings_local.py
+
+# Editor e sistema operacional
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Arquivos de dependências gerados
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Docker
+docker-compose.override.yml

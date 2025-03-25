@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Pedido{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Novo Pedido</h2>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+            
+            <h4 class="mt-4">Itens do Pedido</h4>
+            {{ itens_formset.management_form }}
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in itens_formset %}
+                    <tr>
+                        <td>{{ form.produto }}</td>
+                        <td>{{ form.quantidade }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Enviar Pedido</button>
+                <a href="{% url 'lojas:produtos_disponiveis' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
