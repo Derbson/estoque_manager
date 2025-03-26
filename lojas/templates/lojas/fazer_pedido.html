@@ -1,43 +1,117 @@
 {% extends "base.html" %}
-
-{% block title %}Novo Pedido{% endblock %}
+{% load static %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header">
-        <h2>Novo Pedido</h2>
-    </div>
-    <div class="card-body">
-        <form method="post">
-            {% csrf_token %}
-            
-            {{ form.as_p }}
-            
-            <h4 class="mt-4">Itens do Pedido</h4>
-            {{ itens_formset.management_form }}
-            
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Quantidade</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for form in itens_formset %}
-                    <tr>
-                        <td>{{ form.produto }}</td>
-                        <td>{{ form.quantidade }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Enviar Pedido</button>
-                <a href="{% url 'lojas:produtos_disponiveis' %}" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Novo Pedido</h2>
+            <span class="badge bg-light text-dark">
+                {{ itens_formset|length }} ite{{ itens_formset|pluralize:"m,ns" }} selecionado{{ itens_formset|pluralize }}
+            </span>
+        </div>
+        
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <h4 class="border-bottom pb-2">Informações do Pedido</h4>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            {{ form.observacoes.label_tag }}
+                            {{ form.observacoes }}
+                            <small class="form-text text-muted">Informações adicionais sobre o pedido</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="border-bottom pb-2">Itens Selecionados</h4>
+                    
+                    <div class="table-responsive mt-3">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="60%">Produto</th>
+                                    <th width="20%">Quantidade</th>
+                                    <th width="20%">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itens-forms">
+                                {% for form_item in itens_formset %}
+                                <tr class="item-row">
+                                    <td>
+                                        {{ form_item.produto }}
+                                        {% if form_item.produto.value %}
+                                            {% with produto=form_item.produto.field.queryset.get(pk=form_item.produto.value) %}
+                                            <div class="mt-1 small text-muted">
+                                                Estoque: {{ produto.quantidade }} | 
+                                                Código: {{ produto.codigo }}
+                                            </div>
+                                            {% endwith %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ form_item.quantidade }}
+                                        {% if form_item.quantidade.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form_item.quantidade.errors.as_text }}
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-danger btn-remover">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {{ itens_formset.management_form }}
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'lojas:produtos_disponiveis' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Voltar e selecionar mais itens
+                    </a>
+                    <div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check"></i> Finalizar Pedido
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Remove item da lista
+    $(document).on('click', '.btn-remover', function() {
+        $(this).closest('.item-row').remove();
+        updateFormIndices();
+    });
+
+    // Atualiza os índices do formset quando itens são removidos
+    function updateFormIndices() {
+        var forms = $('.item-row');
+        $('#id_itens-TOTAL_FORMS').val(forms.length);
+        
+        forms.each(function(i) {
+            $(this).find('input, select').each(function() {
+                var name = $(this).attr('name').replace(/-\d+-/, '-' + i + '-');
+                $(this).attr('name', name);
+                var id = $(this).attr('id').replace(/-\d+-/, '-' + i + '-');
+                $(this).attr('id', id);
+            });
+        });
+    }
+});
+</script>
 {% endblock %}

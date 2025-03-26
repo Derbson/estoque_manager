@@ -14,9 +14,17 @@ class ProdutosDisponiveisView(ListView):
     template_name = 'lojas/produtos_disponiveis.html'
     context_object_name = 'produtos'
     
+    # def get_queryset(self):
+    #     # Filtra apenas produtos com estoque disponível
+    #     return Produto.objects.filter(quantidade__gt=0).order_by('descricao')
+    
     def get_queryset(self):
-        # Filtra apenas produtos com estoque disponível
-        return Produto.objects.filter(quantidade__gt=0).order_by('descricao')
+        queryset = super().get_queryset()
+        # Filtro por busca
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(descricao__icontains=search) | queryset.filter(codigo__icontains=search)
+        return queryset.order_by('descricao')
 
 class FazerPedidoView(CreateView):
     model = Pedido
@@ -26,26 +34,74 @@ class FazerPedidoView(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.POST:
+        if self.request.method == 'GET':
+            # Adiciona produtos selecionados via GET (quando vem da página de produtos)
+            selected_products = self.request.GET.getlist('produtos')
+            if selected_products:
+                initial_forms = []
+                for prod_id in selected_products:
+                    try:
+                        produto = Produto.objects.get(id=prod_id)
+                        initial_forms.append({
+                            'produto': produto,
+                            'quantidade': 1
+                        })
+                    except Produto.DoesNotExist:
+                        continue
+                context['itens_formset'] = ItemPedidoFormSet(initial=initial_forms)
+            else:
+                context['itens_formset'] = ItemPedidoFormSet()
+        elif self.request.POST:
             context['itens_formset'] = ItemPedidoFormSet(self.request.POST)
-        else:
-            context['itens_formset'] = ItemPedidoFormSet()
         return context
     
     def form_valid(self, form):
         context = self.get_context_data()
         itens_formset = context['itens_formset']
-        
-        # Define a loja automaticamente (simulando a loja logada)
-        form.instance.loja = Loja.objects.first()  # Temporário - substituir por loja do usuário
+        form.instance.loja = self.request.user.loja
         
         if itens_formset.is_valid():
             self.object = form.save()
             itens_formset.instance = self.object
-            itens_formset.save()
+            # Filtra apenas os itens que foram marcados (com quantidade > 0)
+            itens = [item for item in itens_formset.save(commit=False) 
+                    if item.quantidade > 0 and item.produto is not None]
+            
+            for item in itens:
+                item.pedido = self.object
+                item.save()
+            
             return super().form_valid(form)
         else:
             return self.form_invalid(form)
+# class FazerPedidoView(CreateView):
+#     model = Pedido
+#     form_class = FazerPedidoForm
+#     template_name = 'lojas/fazer_pedido.html'
+#     success_url = reverse_lazy('lojas:lista_pedidos')
+    
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         if self.request.POST:
+#             context['itens_formset'] = ItemPedidoFormSet(self.request.POST)
+#         else:
+#             context['itens_formset'] = ItemPedidoFormSet()
+#         return context
+    
+#     def form_valid(self, form):
+#         context = self.get_context_data()
+#         itens_formset = context['itens_formset']
+        
+#         # Define a loja automaticamente (simulando a loja logada)
+#         form.instance.loja = Loja.objects.first()  # Temporário - substituir por loja do usuário
+        
+#         if itens_formset.is_valid():
+#             self.object = form.save()
+#             itens_formset.instance = self.object
+#             itens_formset.save()
+#             return super().form_valid(form)
+#         else:
+#             return self.form_invalid(form)
 
 class ListaPedidosView(ListView):
     model = Pedido

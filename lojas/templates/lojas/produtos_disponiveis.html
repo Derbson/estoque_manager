@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+            <h2 class="mb-0">Produtos Disponíveis para Pedido</h2>
+            <div>
+                <form id="pedidoForm" method="get" action="{% url 'lojas:fazer_pedido' %}">
+                    <button type="submit" class="btn btn-light btn-sm" id="enviarPedidoBtn" disabled>
+                        <i class="fas fa-paper-plane"></i> Enviar Selecionados
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <form id="selecaoProdutosForm">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="50px"></th>
+                                <th>Código</th>
+                                <th>Descrição</th>
+                                <th>Cor/Tamanho</th>
+                                <th>Estoque Distribuidora</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for produto in produtos %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" 
+                                           class="form-check-input produto-checkbox" 
+                                           name="produtos" 
+                                           value="{{ produto.id }}"
+                                           data-max="{{ produto.quantidade }}">
+                                </td>
+                                <td>{{ produto.codigo }}</td>
+                                <td>{{ produto.descricao }}</td>
+                                <td>
+                                    {% if produto.cor %}{{ produto.cor }}{% endif %}
+                                    {% if produto.tamanho %}/ {{ produto.tamanho }}{% endif %}
+                                </td>
+                                <td>{{ produto.quantidade }}</td>
+                                <td>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-success btn-adicionar"
+                                            data-produto-id="{{ produto.id }}"
+                                            data-produto-desc="{{ produto.descricao }}"
+                                            data-produto-estoque="{{ produto.quantidade }}">
+                                        <i class="fas fa-plus"></i> Adicionar
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4">Nenhum produto disponível no momento</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para adicionar item individual -->
+<div class="modal fade" id="adicionarItemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Adicionar ao Pedido</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="adicionarItemForm">
+                    <input type="hidden" id="modalProdutoId" name="produto_id">
+                    <div class="mb-3">
+                        <label for="modalQuantidade" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control" id="modalQuantidade" 
+                               name="quantidade" min="1" value="1" required>
+                        <div class="form-text">Disponível: <span id="modalEstoqueDisponivel">0</span> unidades</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmarAdicao">Adicionar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Ativa/desativa botão de enviar conforme seleção
+    $('.produto-checkbox').change(function() {
+        var checked = $('.produto-checkbox:checked').length > 0;
+        $('#enviarPedidoBtn').prop('disabled', !checked);
+    });
+
+    // Configura o modal para adicionar item individual
+    $('.btn-adicionar').click(function() {
+        var produtoId = $(this).data('produto-id');
+        var produtoDesc = $(this).data('produto-desc');
+        var produtoEstoque = $(this).data('produto-estoque');
+        
+        $('#modalProdutoId').val(produtoId);
+        $('#modalEstoqueDisponivel').text(produtoEstoque);
+        $('#modalQuantidade').attr('max', produtoEstoque).val(1);
+        
+        $('#adicionarItemModal .modal-title').text('Adicionar: ' + produtoDesc);
+        $('#adicionarItemModal').modal('show');
+    });
+
+    // Confirma adição de item individual
+    $('#confirmarAdicao').click(function() {
+        var produtoId = $('#modalProdutoId').val();
+        var checkbox = $('.produto-checkbox[value="' + produtoId + '"]');
+        
+        // Marca o checkbox correspondente
+        checkbox.prop('checked', true);
+        $('#enviarPedidoBtn').prop('disabled', false);
+        
+        $('#adicionarItemModal').modal('hide');
+    });
+
+    // Submete o formulário com os produtos selecionados
+    $('#pedidoForm').submit(function() {
+        // Coleta todos os checkboxes marcados
+        var selected = [];
+        $('.produto-checkbox:checked').each(function() {
+            selected.push($(this).val());
+        });
+        
+        // Adiciona os parâmetros à URL
+        $(this).attr('action', $(this).attr('action') + '?produtos=' + selected.join(','));
+        return true;
+    });
+});
+</script>
+{% endblock %}
