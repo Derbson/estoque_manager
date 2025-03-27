@@ -1,7 +1,17 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <h2>Lista de Produtos</h2>
+
+<!-- Botão de Logout -->
+<form action="{% url 'autenticacao:logout' %}" method="post" class="float-end">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-sm btn-outline-danger mb-3">
+        <i class="fas fa-sign-out-alt"></i> Sair
+    </button>
+</form>
+
 <a href="{% url 'estoque:produto_create' %}" class="btn btn-primary mb-3">Novo Produto</a>
 
 <form method="get" class="mb-4">

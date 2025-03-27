@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.urls import reverse_lazy
@@ -137,3 +135,5 @@ def atualizar_status_pedido(request, pk, status):
     pedido.save()
     messages.success(request, f'Status do pedido {pedido.numero_pedido} atualizado para {pedido.get_status_display()}')
     return redirect('estoque:pedido_detail', pk=pedido.pk)
+
+

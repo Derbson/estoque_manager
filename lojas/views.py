@@ -74,34 +74,6 @@ class FazerPedidoView(CreateView):
             return super().form_valid(form)
         else:
             return self.form_invalid(form)
-# class FazerPedidoView(CreateView):
-#     model = Pedido
-#     form_class = FazerPedidoForm
-#     template_name = 'lojas/fazer_pedido.html'
-#     success_url = reverse_lazy('lojas:lista_pedidos')
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         if self.request.POST:
-#             context['itens_formset'] = ItemPedidoFormSet(self.request.POST)
-#         else:
-#             context['itens_formset'] = ItemPedidoFormSet()
-#         return context
-    
-#     def form_valid(self, form):
-#         context = self.get_context_data()
-#         itens_formset = context['itens_formset']
-        
-#         # Define a loja automaticamente (simulando a loja logada)
-#         form.instance.loja = Loja.objects.first()  # Temporário - substituir por loja do usuário
-        
-#         if itens_formset.is_valid():
-#             self.object = form.save()
-#             itens_formset.instance = self.object
-#             itens_formset.save()
-#             return super().form_valid(form)
-#         else:
-#             return self.form_invalid(form)
 
 class ListaPedidosView(ListView):
     model = Pedido

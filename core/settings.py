@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'produtos',
     'lojas',
     'pedidos',
+    'autenticacao',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'autenticacao.middleware.AuthRedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -132,3 +134,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGIN_REDIRECT_URL = 'autenticacao:redirecionar_usuario'  # Usará a RedirectUserView
+LOGOUT_REDIRECT_URL = 'autenticacao:login'
