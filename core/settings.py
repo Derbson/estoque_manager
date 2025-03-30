@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'lojas',
     'pedidos',
     'autenticacao',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [

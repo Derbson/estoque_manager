@@ -1,3 +1,4 @@
+# produtos/models.py
 from django.db import models
 from django.core.validators import MinValueValidator
 
@@ -41,12 +42,26 @@ class Produto(models.Model):
         help_text='Tamanho quando aplicável'
     )
     
-    # Controle de estoque
+    # Controle de estoque e preços
     quantidade = models.PositiveIntegerField(
         'Quantidade em Estoque',
         default=0,
         validators=[MinValueValidator(0)],
         help_text='Quantidade disponível na distribuidora'
+    )
+    preco_sellin = models.DecimalField(
+        'Preço Sell-In',
+        max_digits=10,
+        decimal_places=2,
+        help_text='Preço para revenda (lojas)',
+        default=0
+    )
+    preco_sellout = models.DecimalField(
+        'Preço Sell-Out',
+        max_digits=10,
+        decimal_places=2,
+        help_text='Preço para venda final (clientes)',
+        default=0
     )
     
     # Datas

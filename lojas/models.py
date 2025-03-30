@@ -9,8 +9,8 @@ class Loja(models.Model):
         on_delete=models.CASCADE,
         related_name='loja',
         verbose_name='Usuário',
-        # null=True,  # Temporariamente permitir nulo
-        # blank=True  # Temporariamente permitir em branco
+        null=True,  # Temporariamente permitir nulo
+        blank=True  # Temporariamente permitir em branco
     )
     nome = models.CharField(
         'Nome da Loja',
@@ -21,8 +21,8 @@ class Loja(models.Model):
         'CNPJ',
         max_length=18,
         unique=True,
-        # null=True,  # Temporariamente permitir null
-        # blank=True  # Temporariamente permitir em branco
+        null=True,  # Temporariamente permitir null
+        blank=True  # Temporariamente permitir em branco
     )
     endereco = models.TextField(
         'Endereço Completo',
@@ -34,8 +34,8 @@ class Loja(models.Model):
     )
     data_cadastro = models.DateTimeField(
         'Data de Cadastro',
-        # null=True,  # Temporariamente permitir null
-        # blank=True,  # Temporariamente permitir em branco
+        null=True,  # Temporariamente permitir null
+        blank=True,  # Temporariamente permitir em branco
         auto_now_add=True
 
     )

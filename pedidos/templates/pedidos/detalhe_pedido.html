@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Pedido #{{ pedido.id }}</h2>
+<p><strong>Loja:</strong> {{ pedido.loja.nome }}</p>
+<p><strong>Data:</strong> {{ pedido.data_criacao|date:"d/m/Y H:i" }}</p>
+<p><strong>Status:</strong> {{ pedido.get_status_display }}</p>
+<p><strong>Observações:</strong> {{ pedido.observacoes|default:"-" }}</p>
+
+<h3>Itens do Pedido</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Preço Unitário</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in pedido.itens.all %}
+        <tr>
+            <td>{{ item.produto.descricao }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>{{ item.preco_sellin|default:"-" }}</td>
+            <td>{{ item.subtotal|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'pedidos:lista_pedidos' %}" class="btn btn-secondary">Voltar</a>
+{% endblock %}

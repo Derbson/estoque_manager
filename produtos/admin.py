@@ -4,7 +4,7 @@ from .models import Produto
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
     # Campos exibidos na lista de produtos
-    list_display = ('codigo', 'ean', 'descricao', 'cor', 'tamanho', 'quantidade', 'data_cadastro')
+    list_display = ('codigo', 'ean', 'descricao', 'cor', 'tamanho', 'quantidade', 'preco_sellin', 'preco_sellout','data_cadastro')
     
     # Filtros disponíveis
     list_filter = ('cor', 'tamanho')
@@ -24,7 +24,7 @@ class ProdutoAdmin(admin.ModelAdmin):
             'fields': ('cor', 'tamanho')
         }),
         ('Estoque', {
-            'fields': ('quantidade',)
+            'fields': ('preco_sellin','preco_sellout','quantidade',)
         }),
         ('Datas', {
             'fields': ('data_cadastro', 'data_atualizacao'),

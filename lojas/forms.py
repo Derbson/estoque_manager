@@ -26,17 +26,6 @@ class LojaRegistrationForm(UserCreationForm):
             )
         return user
 
-class FazerPedidoForm(forms.ModelForm):
-    class Meta:
-        model = Pedido
-        fields = ['observacoes']
-        widgets = {
-            'observacoes': forms.Textarea(attrs={
-                'rows': 3,
-                'placeholder': 'Observações sobre o pedido...'
-            }),
-        }
-
 ItemPedidoFormSet = inlineformset_factory(
     Pedido,
     ItemPedido,

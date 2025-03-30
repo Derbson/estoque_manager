@@ -3,20 +3,12 @@
 
 {% block content %}
 
-<!-- Botão de Logout -->
-<form action="{% url 'autenticacao:logout' %}" method="post" class="float-end">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-sm btn-outline-danger mb-3">
-        <i class="fas fa-sign-out-alt"></i> Sair
-    </button>
-</form>
-
 <div class="container mt-4">
     <div class="card shadow mb-4">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
             <h2 class="mb-0">Produtos Disponíveis para Pedido</h2>
             <div>
-                <form id="pedidoForm" method="get" action="{% url 'lojas:fazer_pedido' %}">
+                <form id="pedidoForm" method="get" action="{% url 'pedidos:criar_pedido' %}">
                     <button type="submit" class="btn btn-light btn-sm" id="enviarPedidoBtn" disabled>
                         <i class="fas fa-paper-plane"></i> Enviar Selecionados
                     </button>
