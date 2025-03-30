@@ -1,7 +1,7 @@
 # pedidos/models.py
 from django.db import models
 from django.core.validators import MinValueValidator
-from lojas.models import Loja, EstoqueLoja
+from lojas.models import Loja, EstoqueLoja, HistoricoEstoque
 from produtos.models import Produto
 from django.utils import timezone
 
@@ -135,3 +135,28 @@ class ItemPedido(models.Model):
     @property
     def subtotal(self):
         return self.quantidade * self.preco_sellin
+    
+    def save(self, *args, **kwargs):
+        if self.pk:  # Se já existe (atualização)
+            original = ItemPedido.objects.get(pk=self.pk)
+            if original.quantidade != self.quantidade:
+                self.registrar_historico('ajuste', f"Ajuste de quantidade no pedido #{self.pedido.id}")
+        else:  # Novo item
+            self.registrar_historico('pedido', f"Pedido #{self.pedido.id}")
+        
+        super().save(*args, **kwargs)
+    
+    def registrar_historico(self, tipo, motivo):
+        HistoricoEstoque.objects.create(
+            produto=self.produto,
+            loja=self.pedido.loja,
+            tipo=tipo,
+            quantidade=self.quantidade,
+            quantidade_anterior=self.produto.quantidade,
+            quantidade_posterior=self.produto.quantidade - self.quantidade,
+            usuario=self.pedido.loja.usuario,
+            motivo=motivo,
+            pedido=self.pedido
+        )
+
+
