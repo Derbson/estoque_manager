@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load custom_filters %}
 
 {% block content %}
 <div class="container">
@@ -106,7 +107,7 @@
                                 </span>
                             </td>
                             <td>R$ {{ item.produto.preco_sellin|intcomma }}</td>
-                            <td>R$ {{ item.valor_total|intcomma }}</td>
+                            <td>R$ {{ item.quantidade|multiply:item.produto.preco_sellin }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <button class="btn btn-primary" data-bs-toggle="modal" 

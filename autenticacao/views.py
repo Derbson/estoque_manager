@@ -17,7 +17,7 @@ class CustomLoginView(LoginView):
         if self.request.user.is_superuser or self.request.user.is_staff:
             return reverse('estoque:produto_list')
         elif hasattr(self.request.user, 'loja'):
-            return reverse('lojas:produtos_disponiveis')
+            return reverse('pedidos:lista_pedidos')
         # Se não for nenhum dos casos acima, redireciona de volta para o login
         return reverse('autenticacao:login')
 

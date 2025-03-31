@@ -3,6 +3,13 @@
 
 {% block content %}
 <div class="container">
+
+    <div class="mb-3">
+        <a href="{% url 'estoque:produto_list' %}" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Home
+        </a>
+    </div>
+
     <h2 class="my-4">Gerenciamento de Pedidos (Admin)</h2>
     
     <!-- Filtros -->

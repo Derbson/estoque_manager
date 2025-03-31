@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Importar Produtos</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <h5>Formato da Planilha</h5>
+                            <p>Seu arquivo deve conter as seguintes colunas:</p>
+                            <ul>
+                                <li><strong>codigo</strong> (obrigatório) - Código único do produto</li>
+                                <li><strong>descricao</strong> (obrigatório) - Nome do produto</li>
+                                <li>ean - Código de barras (opcional)</li>
+                                <li>cor - Cor do produto (opcional)</li>
+                                <li>tamanho - Tamanho (opcional)</li>
+                                <li>quantidade - Quantidade em estoque</li>
+                                <li>preco_sellin - Preço para revenda</li>
+                                <li>preco_sellout - Preço para venda final</li>
+                            </ul>
+                            <a href="{% url 'produtos:download_modelo' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-download"></i> Baixar Modelo
+                            </a>
+                        </div>
+                        
+                        {{ form.as_p }}
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'estoque:produto_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Importar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,88 +2,102 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
-    <h2 class="my-4">Novo Pedido</h2>
-    <form method="post" class="mb-5">
-        {% csrf_token %}
-        
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5>Observações</h5>
-            </div>
-            <div class="card-body">
-                {{ form.observacoes }}
+<div class="container mt-4">
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+            <h2 class="mb-0">Novo Pedido</h2>
+            <div>
+                <a href="{% url 'pedidos:lista_pedidos' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
             </div>
         </div>
         
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5>Produtos Disponíveis</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    {% for produto in form.produtos.field.queryset %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" 
-                                           name="produtos" 
-                                           value="{{ produto.id }}" 
-                                           id="produto-{{ produto.id }}">
-                                    <label class="form-check-label" for="produto-{{ produto.id }}">
-                                        <strong>{{ produto.descricao }}</strong>
-                                    </label>
-                                </div>
-                                <div class="mt-2">
-                                    <p class="mb-1"><small>Código: {{ produto.codigo }}</small></p>
-                                    <p class="mb-1">Estoque: {{ produto.quantidade }}</p>
-                                    <p class="mb-1">Preço: R$ {{ produto.preco_sellin }}</p>
-                                </div>
-                                <div class="mt-2">
-                                    <label for="quantidade-{{ produto.id }}">Quantidade:</label>
-                                    <input type="number" 
-                                           id="quantidade-{{ produto.id }}" 
-                                           name="quantidade-{{ produto.id }}" 
-                                           min="1" 
-                                           max="{{ produto.quantidade }}" 
-                                           value="1" 
-                                           class="form-control form-control-sm" 
-                                           style="width: 80px;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="col-12">
-                        <p class="text-muted">Nenhum produto disponível no momento.</p>
-                    </div>
-                    {% endfor %}
+        <div class="card-body">
+            <form method="post" id="pedidoForm">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <h5 class="text-primary mb-3">Observações</h5>
+                    {{ form.observacoes }}
                 </div>
-            </div>
+                
+                <div class="mt-4">
+                    <h5 class="text-primary mb-3">Produtos Disponíveis</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="50px"></th>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                    <th>Estoque</th>
+                                    <th>Preço</th>
+                                    <th>Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for produto in form.produtos.field.queryset %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" 
+                                               class="form-check-input produto-checkbox" 
+                                               name="produtos" 
+                                               value="{{ produto.id }}"
+                                               id="produto-{{ produto.id }}">
+                                    </td>
+                                    <td>{{ produto.codigo }}</td>
+                                    <td>{{ produto.descricao }}</td>
+                                    <td>{{ produto.quantidade }}</td>
+                                    <td>R$ {{ produto.preco_sellin }}</td>
+                                    <td>
+                                        <input type="number" 
+                                               id="quantidade-{{ produto.id }}" 
+                                               name="quantidade-{{ produto.id }}" 
+                                               min="1" 
+                                               max="{{ produto.quantidade }}" 
+                                               value="1" 
+                                               class="form-control form-control-sm" 
+                                               style="width: 80px;">
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">Nenhum produto disponível no momento</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Enviar Pedido
+                    </button>
+                </div>
+            </form>
         </div>
-        
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">Enviar Pedido</button>
-            <a href="{% url 'pedidos:lista_pedidos' %}" class="btn btn-secondary">Cancelar</a>
-        </div>
-    </form>
+    </div>
 </div>
 {% endblock %}
 
-{% block scripts %}
+{% block extra_js %}
 <script>
-// JavaScript para habilitar/desabilitar a quantidade quando o checkbox é alterado
-document.querySelectorAll('input[type="checkbox"][name="produtos"]').forEach(checkbox => {
-    const produtoId = checkbox.value;
-    const quantidadeInput = document.getElementById(`quantidade-${produtoId}`);
-    
-    checkbox.addEventListener('change', function() {
-        quantidadeInput.disabled = !this.checked;
+$(document).ready(function() {
+    // Habilita/desabilita a quantidade conforme checkbox
+    $('.produto-checkbox').change(function() {
+        const produtoId = $(this).val();
+        const quantidadeInput = $('#quantidade-' + produtoId);
+        quantidadeInput.prop('disabled', !this.checked);
     });
-    
-    // Inicialmente desabilitar se não estiver marcado
-    quantidadeInput.disabled = !checkbox.checked;
+
+    // Inicialmente desabilitar as quantidades para checkboxes não marcados
+    $('.produto-checkbox').each(function() {
+        const produtoId = $(this).val();
+        const quantidadeInput = $('#quantidade-' + produtoId);
+        quantidadeInput.prop('disabled', !$(this).is(':checked'));
+    });
 });
 </script>
 {% endblock %}

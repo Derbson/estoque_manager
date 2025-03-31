@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'pedidos',
     'autenticacao',
     'django.contrib.humanize',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +141,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'autenticacao:redirecionar_usuario'  # Usará a RedirectUserView
 LOGOUT_REDIRECT_URL = 'autenticacao:login'
+
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+

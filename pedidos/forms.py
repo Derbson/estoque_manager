@@ -1,6 +1,7 @@
 # pedidos/forms.py
 from django import forms
 from produtos.models import Produto
+from .models import Pedido
 
 class CriarPedidoForm(forms.Form):
     observacoes = forms.CharField(

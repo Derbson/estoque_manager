@@ -69,6 +69,8 @@ class EstoqueLoja(models.Model):
 
 class HistoricoEstoque(models.Model):
     TIPO_CHOICES = [
+        ('cadastro', 'Cadastro Inicial'),
+        ('importacao', 'Importação em Massa'),
         ('entrada', 'Entrada'),
         ('saida', 'Saída'),
         ('pedido', 'Pedido'),

@@ -1,12 +1,14 @@
-from django.views.generic import ListView, FormView, DetailView
+from django.views.generic import ListView, FormView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from django.db.models import Q
 from .models import Pedido, ItemPedido
 from .forms import CriarPedidoForm
 from produtos.models import Produto
 from django.shortcuts import redirect
 from django.contrib import messages
 from lojas.models import Loja
+from django.views import View
 
 
 class ListaPedidosView(LoginRequiredMixin, ListView):
@@ -20,6 +22,7 @@ class ListaPedidosView(LoginRequiredMixin, ListView):
         if self.request.user.is_superuser:
             return queryset.order_by('-data_criacao')
         return queryset.filter(loja=self.request.user.loja).order_by('-data_criacao')
+
 
 class CriarPedidoView(LoginRequiredMixin, FormView):
     template_name = 'pedidos/criar_pedido.html'
@@ -114,11 +117,7 @@ class DetalhePedidoAdminView(UserPassesTestMixin, DetailView):
         context['status_choices'] = Pedido.STATUS_CHOICES
         return context
 
-from django.shortcuts import redirect
-from django.contrib import messages
-from django.views import View
-from django.contrib.auth.mixins import UserPassesTestMixin
-from .models import Pedido
+
 
 class AlterarStatusView(UserPassesTestMixin, View):
     """
@@ -155,3 +154,6 @@ class AlterarStatusView(UserPassesTestMixin, View):
         except Pedido.DoesNotExist:
             messages.error(request, 'Pedido não encontrado')
             return redirect('pedidos:lista_pedidos_admin')
+        
+
+

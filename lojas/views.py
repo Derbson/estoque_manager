@@ -53,8 +53,8 @@ class EstoqueLojaView(ListView):
     def get_queryset(self):
         # Filtra apenas estoque da loja (simulando a loja logada)
         return EstoqueLoja.objects.filter(loja=Loja.objects.first()).select_related('produto')
-
-
+    
+    
 class CadastroLojaView(CreateView):
     form_class = LojaRegistrationForm
     template_name = 'lojas/cadastro_loja.html'
