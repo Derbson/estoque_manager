@@ -58,39 +58,13 @@ class EstoqueLojaView(ListView):
 class CadastroLojaView(CreateView):
     form_class = LojaRegistrationForm
     template_name = 'lojas/cadastro_loja.html'
-    success_url = reverse_lazy('pagina_inicial')
+    success_url = reverse_lazy('produtos/produto_list.html')
 
     def form_valid(self, form):
         response = super().form_valid(form)
         login(self.request, self.object)
         return response
 
-
-
-# class AjustarEstoqueView(LoginRequiredMixin, View):
-#     def post(self, request, pk):
-#         item_estoque = get_object_or_404(EstoqueLoja, pk=pk)
-#         tipo_ajuste = request.POST.get('tipo_ajuste')
-#         quantidade = int(request.POST.get('quantidade', 0))
-#         motivo = request.POST.get('motivo', '')
-
-#         try:
-#             if tipo_ajuste == 'entrada':
-#                 item_estoque.quantidade += quantidade
-#             elif tipo_ajuste == 'saida':
-#                 if item_estoque.quantidade >= quantidade:
-#                     item_estoque.quantidade -= quantidade
-#                 else:
-#                     raise ValueError("Quantidade indisponível em estoque")
-#             elif tipo_ajuste == 'definir':
-#                 item_estoque.quantidade = quantidade
-            
-#             item_estoque.save()
-#             messages.success(request, f'Estoque de {item_estoque.produto.descricao} ajustado com sucesso!')
-#         except Exception as e:
-#             messages.error(request, f'Erro ao ajustar estoque: {str(e)}')
-
-#         return redirect('lojas:estoque_loja')
 
 class AjustarEstoqueView(LoginRequiredMixin, View):
     def post(self, request, pk):

@@ -13,6 +13,9 @@ class CustomLoginView(LoginView):
         return super().dispatch(request, *args, **kwargs)
     
     def get_redirect_url(self):
+
+        if self.request.user.username in ['admin']:  # Mesmos usernames do middleware
+            return reverse('lojas:produtos_disponiveis')  # Mesma URL do middleware
         """Redireciona para a página adequada após login"""
         if self.request.user.is_superuser or self.request.user.is_staff:
             return reverse('estoque:produto_list')

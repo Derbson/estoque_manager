@@ -14,10 +14,13 @@ class AuthRedirectMiddleware:
         if request.user.is_authenticated:
             login_url = reverse('autenticacao:login')
             
-            # Se tentar acessar login já autenticado, redireciona
             if request.path == login_url:
+                # Redireciona por username (adicione seus usuários específicos)
+                if request.user.username in ['admin']:  # Substitua pelos usernames desejados
+                    return redirect('lojas:produtos')  # URL para esses usuários
+                
                 if request.user.is_superuser or request.user.is_staff:
                     return redirect('estoque:produto_list')
                 elif hasattr(request.user, 'loja'):
-                    return redirect('lojas:produtos')
+                    return redirect('pedidos:lista_pedidos')
                 return redirect('home')

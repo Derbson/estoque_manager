@@ -1,7 +1,12 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
+.git/
+.venv/
+venv/
+*.sqlite3
+*.log
+
 
 # Virtual environment
 venv/
@@ -41,3 +46,7 @@ poetry.lock
 
 # Docker
 docker-compose.override.yml
+*.log
+__pycache__/
+*.pyc
+
